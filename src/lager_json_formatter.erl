@@ -16,8 +16,9 @@ format(Msg, Config) ->
 
 -spec format(lager_msg:lager_msg(), list(), list()) -> binary().
 format(Message, Config, _Colors) ->
-    T = [ {JsonKey, output(LagerKey, Message)} || {JsonKey, LagerKey} <- Config ],
-    iolist_to_binary([jsx:encode(T), "\n"]).
+    T0 = [ {JsonKey, output(LagerKey, Message)} || {JsonKey, LagerKey} <- Config ],
+    T1 = [ {K, V} || {K, V} <- T0, V /= ignore],
+    iolist_to_binary([jsx:encode(T1), "\n"]).
 
 -spec output(term(), lager_msg:lager_msg()) -> binary() | atom() | string().
 output(message, Msg) -> 
@@ -37,6 +38,12 @@ output(severity_upper, Msg) ->
     uppercase_severity(lager_msg:severity(Msg));
 output(node, _Msg) -> 
     node();
+output({metadata, Key}, Msg) ->
+    MD0 = lager_msg:metadata(Msg),
+    case proplists:get_value(Key, MD0, undefined) of
+        undefined -> ignore;
+        V -> make_printable(V)
+    end;
 output(metadata, Msg) ->
     MD0 = lager_msg:metadata(Msg),
     MD = [{K, make_printable(V)} || {K, V} <- MD0],

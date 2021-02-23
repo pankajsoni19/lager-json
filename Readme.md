@@ -40,11 +40,10 @@ In your `sys.config`
                     {timestamp, datetime},
                     {server, node},
                     {service, my_service},
-                    {metadata, metadata},
-                    {process, pid}, 
-                    {module, module},
-                    {function, function},
-                    {line, line}
+                    {process, {metadata, pid}}, 
+                    {module, {metadata, module}},
+                    {function, {metadata, function}},
+                    {line, {metadata, line}}
                 ]},
                 {size, 104857600}, {date, "$D0"}, {count, 100}
             ]}
