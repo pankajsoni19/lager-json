@@ -18,11 +18,19 @@ format(Msg, Config) ->
 format(Message, Config, _Colors) ->
     T0 = [ {JsonKey, output(LagerKey, Message)} || {JsonKey, LagerKey} <- Config ],
     T1 = [ {K, V} || {K, V} <- T0, V /= ignore],
-    iolist_to_binary([jsx:encode(T1), "\n"]).
+    J1 = jsx:encode(T1),
+    J2 = replace([{<<"<<\\\"">>, <<"'">>}, {<<"\\\">>">>, <<"'">>}], J1),
+    [J2, "\n"].
+
+
+replace([], J) -> J;
+replace([{Pattern, Replace} | Items], J1) ->
+    J2 = binary:replace(J1, Pattern, Replace, [global]),
+    replace(Items, J2).
 
 -spec output(term(), lager_msg:lager_msg()) -> binary() | atom() | string().
-output(message, Msg) -> 
-    lager_msg:message(Msg);
+output(message, Msg) ->
+     iolist_to_binary(lager_msg:message(Msg));
 output(datetime, Msg) ->
     {D, T} = lager_msg:datetime(Msg),
     iolist_to_binary([D, <<" ">>, T]);
@@ -52,6 +60,8 @@ output({pterm, Key}, Msg) ->
     output({pterm, Key, ""}, Msg);
 output({pterm, Key, Default}, _Msg) ->
     make_printable(maybe_get_persistent_term(Key, Default));
+output({service, Key}, _Msg) ->
+    Key;
 output(Prop, Msg) when is_atom(Prop) ->
     Metadata = lager_msg:metadata(Msg),
     make_printable(get_metadata(Prop, Metadata, <<"Undefined">>));
