@@ -1,0 +1,50 @@
+.eunit
+_rel/
+*.d
+ebin/
+.erlang.mk/
+*.swp
+*.swo
+*.o
+*.beam
+*.plt
+erl_crash.dump
+.concrete/DEV_MODE
+
+# rebar 2.x
+.rebar
+rel/example_project
+ebin/*.beam
+deps
+
+# rebar 3
+.rebar3
+_build/
+_checkouts/
+
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon must end with two \r
+Icon
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
